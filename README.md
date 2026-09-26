@@ -62,14 +62,14 @@ Best threshold per model under the Recall ≥ 0.80 constraint:
 | Model | Best Threshold | Recall | Precision | F1 | Accuracy |
 |---|---|---|---|---|---|
 | Logistic Regression | 0.50 | 0.810 | 0.525 | 0.637 | 0.755 |
+| Random Forest | 0.50 | 0.821 | 0.483 | 0.608 | 0.719 |
+| Decision Tree | 0.45 | 0.853 | 0.462 | 0.599 | 0.697 |
 | SVC | 0.25 | 0.821 | 0.470 | 0.598 | 0.707 |
 | KNN | 0.30 | 0.807 | 0.457 | 0.584 | 0.694 |
-| Decision Tree | — | — | — | — | *pending re-run, see note below* |
-| Random Forest | — | — | — | — | *pending re-run, see note below* |
 
 **Selected model: Logistic Regression @ threshold 0.50** (highest F1 among models meeting Recall ≥ 0.80).
 
-> **Note on Decision Tree / Random Forest:** an earlier version of this pipeline had a scaling bug — the tree models were trained on unscaled features but evaluated on scaled test data (see the fix explained in `03_Modeling.ipynb`). That made their previous numbers invalid. The bug is fixed in the current notebooks; the table above will be complete once `03_Modeling.ipynb` and `04_Evaluation.ipynb` are re-run end to end with the raw dataset.
+> **Note on Decision Tree / Random Forest:** an earlier version of this pipeline had a scaling bug — the tree models were trained on unscaled features but evaluated on scaled test data (see the fix explained in `03_Modeling.ipynb`). That made their previous numbers invalid (Precision was unrealistically low). The table above reflects the corrected, re-run results, which are now in a sensible range consistent with the other models.
 
 ## Business Trade-off
 
@@ -99,6 +99,5 @@ prediction = (proba_churn >= 0.50).astype(int)  # using the selected threshold
 
 ## Known Issues / Next Steps
 
-- Re-run `03_Modeling.ipynb` → `04_Evaluation.ipynb` with the raw CSV to get valid Decision Tree / Random Forest numbers (see note above).
 - `pd.get_dummies` currently keeps all category levels (no `drop_first=True`); harmless for tree models, worth revisiting for Logistic Regression's interpretability.
 - No `Pipeline`/`ColumnTransformer` yet — preprocessing and modeling are separate notebooks connected by an intermediate CSV. A future iteration could wrap this in a single `sklearn.Pipeline` for cleaner deployment.
